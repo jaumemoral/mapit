@@ -17,7 +17,9 @@ mongo.Db.connect(mongoUri, function (err, mydb) {
 	console.log("Connected to mongo");
 	db=mydb;
 	initDB();
-  }   
+  } else {
+	console.log("Connected to mongo");
+  }
 });
 
 // Routes
@@ -84,6 +86,7 @@ function initDB() {
 		]
 	}
   ];
+
   db.collection('maps', function(er, collection) {
     collection.drop(function (er,rs) {
       console.log("Wiping out db...");

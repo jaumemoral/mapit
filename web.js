@@ -17,7 +17,9 @@ mongo.Db.connect(mongoUri, function (err, mydb) {
 	console.log("Connected to mongo");
 	db=mydb;
 	initDB();
-  }   
+  } else {
+	console.log("Not connected to mongo :(");
+  }
 });
 
 // Routes
