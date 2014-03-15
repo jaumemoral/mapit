@@ -84,7 +84,6 @@ function initDB() {
 		]
 	}
   ];
-
   db.collection('maps', function(er, collection) {
     collection.drop(function (er,rs) {
       console.log("Wiping out db...");
