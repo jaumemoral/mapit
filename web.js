@@ -39,7 +39,7 @@ app.get('/maps/:id', function(req, res) {
 app.get('/maps/', function(req, res) {
   db.collection('maps', function(err, collection) {
     collection.find({},['id','title']).toArray(function(err,list) {
-    	res.send(lis);
+    	res.send(list);
     });
   });
 });
