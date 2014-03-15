@@ -1,0 +1,15 @@
+{
+  "author": "jaumem <jaume.moral@gmail.com>",
+  "name": "mapit",
+  "description": "Map your trip",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
