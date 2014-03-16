@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  </head>
+  <body>
+    <h1>MapTrip API test page</h1>
+    <p>Map your trip while you're at home</p>
+    <ul>
+    <li><a href="/wipeout/">Init DB</a>
+    <li><a href="/maps/">maps</a>
+    <li><a href="/maps/barcelona">Barcelona</a>
+    </ul>
+    <form>
+    <input id="test">
+    <button id="map">Map</button>
+    <textarea>{id:"qualsevol",title:"On sigui"}</textarea>
+    <button id="add">Add</button>
+    <pre id="result"></pre>
+    </form>
+    <script>
+      $("#map").click(function(e){
+	e.preventDefault();
+        $.get("/maps/"+$("#test").val()).done(function(data) {  
+          $("#result").text(JSON.stringify(data, undefined, 2));
+        });
+      });
+
+      $("#add").click(function(e){
+	e.preventDefault();
+        $.post("/maps/",JSON.parse($("textarea").val())).done(function(data) {  
+          $("#result").text(JSON.stringify(data, undefined, 2));
+        });
+      });
+
+      $("a").click(function(e){
+	e.preventDefault();
+        $.get($(this).attr("href")).done(function(data) {  
+          $("#result").text(JSON.stringify(data, undefined, 2));
+        });
+      });
+
+    </script>
+  </body>
+</html>

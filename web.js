@@ -75,8 +75,9 @@ function initDB() {
 	{
 		id:"barcelona",title:"Barcelona",
 		locations: [
-			{type:"point",coords:{x:1,y:2},name:"casa",description:"Casa meva"},
-			{type:"point",coords:{x:1,y:2},name:"altre lloc",description:"On sigui"}
+			{type:"point",coords:[41.40401, 2.17454],name:"Sagrada Familia",description:"On van tots els turistes"},
+			{type:"point",coords:[41.3705, 2.1502],name:"Pavello mies van der rohe",description:"No se com s'escriu"},
+			{type:"route",coords:[[41.3705, 2.1502],[41.40401, 2.17454]],name:"Linia recta",description:"Com no vagis volant..."}
 		]
 	},
 	{
