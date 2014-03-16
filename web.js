@@ -4,6 +4,7 @@ var express = require("express");
 var app = express();
 app.use(express.logger('dev')); /* 'default', 'short', 'tiny', 'dev' */
 app.use(express.bodyParser());
+app.use(express.static(__dirname + '/public'));
 var mongo = require('mongodb');
 
 var mongoUri = process.env.MONGOLAB_URI ||
@@ -23,10 +24,6 @@ mongo.Db.connect(mongoUri, function (err, mydb) {
 });
 
 // Routes
-
-app.get('/', function(req, res) {
-  res.send('Hello MapIt! Lots of things to do');
-});
 
 app.get('/maps/:id', function(req, res) {
   db.collection('maps', function(err, collection) {

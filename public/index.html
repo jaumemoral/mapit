@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  </head>
+  <body>
+    <h1>MapIt</h1>
+    <form>
+    <input id="test"><button>Test</button>
+    <pre id="result"></pre>
+    </form>
+    <script>
+      $("button").click(function(e){
+	e.preventDefault();
+        $.get("/maps/"+$("#test").val()).done(function(data) {  
+          $("#result").text(JSON.stringify(data, undefined, 2));
+        });
+      });
+    </script>
+  </body>
+</html>

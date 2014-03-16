@@ -4,6 +4,7 @@ var express = require("express");
 var app = express();
 app.use(express.logger('dev')); /* 'default', 'short', 'tiny', 'dev' */
 app.use(express.bodyParser());
+app.use(express.static(__dirname + '/public'));
 var mongo = require('mongodb');
 
 var mongoUri = process.env.MONGOLAB_URI ||
@@ -39,7 +40,7 @@ app.get('/maps/:id', function(req, res) {
 app.get('/maps/', function(req, res) {
   db.collection('maps', function(err, collection) {
     collection.find({},['id','title']).toArray(function(err,list) {
-    	res.send(lis);
+    	res.send(list);
     });
   });
 });
