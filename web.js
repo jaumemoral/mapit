@@ -1,4 +1,4 @@
-// MapIt
+// MapTrip
 
 var express = require("express");
 var app = express();
@@ -17,7 +17,6 @@ mongo.Db.connect(mongoUri, function (err, mydb) {
   if (!err) {
 	console.log("Connected to mongo");
 	db=mydb;
-	initDB();
   } else {
 	console.log("Not connected to mongo :(");
   }
@@ -58,6 +57,11 @@ app.post('/maps/', function(req, res) {
     	res.send(doc);
     });
   });
+});
+
+app.get('/wipeout/', function(req, res) {
+  initDB();
+  res.send("DB initialitzed!");
 });
 
 
