@@ -24,7 +24,7 @@ mongo.Db.connect(mongoUri, function (err, mydb) {
 
 // Routes
 
-app.get('/maps/:id', function(req, res) {
+app.get('/api/maps/:id', function(req, res) {
   db.collection('maps', function(err, collection) {
     collection.findOne({'id':req.params.id}, function(err,doc) {
     	res.send(doc);
@@ -32,7 +32,7 @@ app.get('/maps/:id', function(req, res) {
   });
 });
 
-app.get('/maps/', function(req, res) {
+app.get('/api/maps/', function(req, res) {
   db.collection('maps', function(err, collection) {
     collection.find({},['id','title']).toArray(function(err,list) {
     	res.send(list);
@@ -40,7 +40,7 @@ app.get('/maps/', function(req, res) {
   });
 });
 
-app.put('/maps/:id', function(req, res) {
+app.put('/api/maps/:id', function(req, res) {
   var id=req.params.id;
   var map=req.body;
   db.collection('maps', function(err, collection) {
@@ -50,7 +50,7 @@ app.put('/maps/:id', function(req, res) {
   });
 });
 
-app.post('/maps/', function(req, res) {
+app.post('/api/maps/', function(req, res) {
   var map=req.body;
   db.collection('maps', function(err, collection) {
     collection.insert(map,{safe:true},function(err,doc) {
@@ -59,7 +59,7 @@ app.post('/maps/', function(req, res) {
   });
 });
 
-app.get('/wipeout/', function(req, res) {
+app.get('/api/wipeout/', function(req, res) {
   initDB();
   res.send("DB initialitzed!");
 });
