@@ -23,10 +23,26 @@ app.get('/api/maps/:id', function(req, res) {
   res.send(
       {
     id:"barcelona",title:"Barcelona",
-    locations: [
-      {type:"point",coords:[41.40401, 2.17454],name:"Sagrada Familia",description:"On van tots els turistes"},
-      {type:"point",coords:[41.3705, 2.1502],name:"Pavello mies van der rohe",description:"No se com s'escriu"},
-      {type:"route",coords:[[41.3705, 2.1502],[41.40401, 2.17454]],name:"Linia recta",description:"Com no vagis volant..."}
+    description:"Viatge per Barcelona i per algun altre lloc que no sé exactament com posaré",
+    sections: [
+      {
+        name:"Barcelona",
+        description:"Primer dia",
+        locations: [
+          {type:"point",coords:[41.40401, 2.17454],name:"Sagrada Familia",description:"On van tots els turistes"},
+          {type:"route",coords:[[41.3705, 2.1502],[41.40401, 2.17454]],name:"Linia recta",description:"Com no vagis volant..."},
+          {type:"point",coords:[41.3705, 2.1502],name:"Pavello mies van der rohe",description:"No se com s'escriu"}
+        ]
+      },
+      {
+        name:"Madrid",
+        description:"Segon dia",
+        locations: [
+          {type:"point",coords:[40.40401, 1.17454],name:"Sagrada Familia",description:"On van tots els turistes"},
+          {type:"point",coords:[40.3705, 1.1502],name:"Pavello mies van der rohe",description:"No se com s'escriu"},
+          {type:"route",coords:[[40.3705, 1.1502],[40.40401, 1.17454]],name:"Linia recta",description:"Com no vagis volant..."}
+        ]
+      }
     ]
   }
   );

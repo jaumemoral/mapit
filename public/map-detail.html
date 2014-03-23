@@ -3,13 +3,19 @@
 	<polyline ng-repeat="p in map.polylines" path="p.path"/>
 	</google-map>
 	<div class="trip-description">
+    <input type="text" id="search"></input><button></button>
     <h1>{{trip.title}}</h1>
-    <ul ng-repeat="location in trip.locations">
+    <p>{{trip.description}}</p>
+    <div class="section" ng-repeat="section in trip.sections">
+    <h2>{{section.name}}</h2>
+    <p>{{section.description}}</p>
+    <ul ng-repeat="location in section.locations">
     	<li>
     	<h3>{{location.name}}</h3>
-    	<p>{{location.description}}</h3>
+    	<p>{{location.description}}</p>
     	</li>
-    </ul> 
+    </ul>
+    </div> 
     <p>center: {{map.center}}</p>
     <p>markers: {{map.markers}}</p>
     <p>polylines: {{map.polylines}}</p>

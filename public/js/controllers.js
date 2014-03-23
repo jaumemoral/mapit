@@ -1,4 +1,4 @@
-var mapTrip = angular.module('mapTrip', ['ngRoute','google-maps']);
+var mapTrip = angular.module('mapTrip', ['ngRoute','google-maps','mapTripServices']);
  
 mapTrip.config(['$routeProvider',
   function($routeProvider) {
@@ -14,18 +14,13 @@ mapTrip.config(['$routeProvider',
 }]);
 
 
-mapTrip.controller('MapListCtrl', function ($scope,$http) {
-  $http.get("/api/maps/").success(function(data) {  
-    $scope.trips=data;
-  });
+mapTrip.controller('MapListCtrl', function ($scope,Trip) {
+  $scope.trips=Trip.query();
 });
 
-mapTrip.controller('MapDetailCtrl',function ($scope,$http,$routeParams) {
-  $http.get("/api/maps/"+$routeParams.mapId).success(function(trip) {  
+mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
+  Trip.get({mapId:$routeParams.mapId},function(trip) {  
     $scope.trip=trip;
-    var p=trip.locations[0].coords;
-	console.log(p);
-    $scope.map.center= {latitude: p[0], longitude: p[1]};
     showMap($scope.map,trip);
     console.log($scope.map);
   });
@@ -40,10 +35,27 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$http,$routeParams) {
     zoom: 8
   };
 
+  function  searchAddress() {
+    var map=$scope.map.control.getGMap();
+    var address=$("#search").val();
+    geocoder.geocode( { 'address': address}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          map.setCenter(results[0].geometry.location);
+          var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location
+          });
+        } else {
+          alert('Geocode was not successful for the following reason: ' + status);
+        }
+      });
+  }
+
+
 });
 
 function showMap(map,data) {
-  var locations=data.locations;
+  var locations=data.sections[0].locations;
 //  var bounds = new google.maps.LatLngBounds();
   map.markers=[];
   map.polylines=[]
