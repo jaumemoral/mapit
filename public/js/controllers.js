@@ -36,7 +36,7 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$http,$routeParams) {
         longitude: 2
     },
     markers:[],
-    polyline:[],
+    polylines:[{path:[{latitude: 21,longitude: 2},{latitude: 21,longitude: 2}]}],
     zoom: 8
   };
 
@@ -46,19 +46,19 @@ function showMap(map,data) {
   var locations=data.locations;
 //  var bounds = new google.maps.LatLngBounds();
   map.markers=[];
-  map.polyline=[]
+  map.polylines=[]
 
   for (var i in locations) {
     var location=locations[i];
     if (location.type=="point") {
-      map.markers.push({latitude:location.coords[0],longitude:location.coords[1]});
+      map.markers.push({latitude:location.coords[0],longitude:location.coords[1],showWindow:false,title:location.name});
       //addPoint(map,location);
     }
     if (location.type=="route") {
       addRoute(map,location);
     }
   }
-  console.log(map.polyline);
+  console.log(map.polylines);
 }
 
 function addPoint(map,location) {
@@ -75,5 +75,5 @@ function addRoute(map,location) {
     var coord=location.coords[i];
       line.push({latitude:coord[0],longitude:coord[1]});
   }
-  map.polyline=line;
+  map.polylines.push({path:line});
 }

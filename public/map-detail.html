@@ -1,10 +1,19 @@
-    <h1>{{trip.title}}</h1>
-    <p>{{trip.locations}}</p>
-    <p>center: {{map.center}}</p>
-    <p>markers: {{map.markers}}</p>
-    <p>polyline: {{map.polyline}}</p>
     <google-map style="display:block;height:300px" center="map.center" zoom="map.zoom">
     <markers models="map.markers" coords="'self'" fit="true"/>
-	<polyline path="[{latitude:41.3705,longitude:2.1502},{latitude:41.40401,longitude:2.17454}]"/>
+	<polyline ng-repeat="p in map.polylines" path="p.path"/>
 	</google-map>
-    
+	<div class="trip-description">
+    <h1>{{trip.title}}</h1>
+    <ul ng-repeat="location in trip.locations">
+    	<li>
+    	<h3>{{location.name}}</h3>
+    	<p>{{location.description}}</h3>
+    	</li>
+    </ul> 
+    <p>center: {{map.center}}</p>
+    <p>markers: {{map.markers}}</p>
+    <p>polylines: {{map.polylines}}</p>
+    <ul>
+    <li ng-repeat="p in map.polylines">{{p}}
+    </ul>
+	</div>    
