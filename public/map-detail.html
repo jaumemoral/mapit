@@ -1,5 +1,10 @@
     <h1>{{trip.title}}</h1>
     <p>{{trip.locations}}</p>
     <p>center: {{map.center}}</p>
-    <map style="display:block;height:300px" center="map.center" zoom="map.zoom">
-    </map>
+    <p>markers: {{map.markers}}</p>
+    <p>polyline: {{map.polyline}}</p>
+    <google-map style="display:block;height:300px" center="map.center" zoom="map.zoom">
+    <markers models="map.markers" coords="'self'" fit="true"/>
+	<polyline path="[{latitude:41.3705,longitude:2.1502},{latitude:41.40401,longitude:2.17454}]"/>
+	</google-map>
+    
