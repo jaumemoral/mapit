@@ -1,25 +1,29 @@
-    <google-map style="display:block;height:300px" center="map.center" zoom="map.zoom">
-    <markers models="map.markers" coords="'self'" fit="true"/>
-	<polyline ng-repeat="p in map.polylines" path="p.path"/>
-	</google-map>
+
+
 	<div class="trip-description">
-    <input type="text" id="search"></input><button></button>
+
+    <input type="text" id="search" ng-model="address"/>
+    <button ng-click="searchAddress()">Search</button>
+    <span ng-show="newMarker!=null">
+    <button ng-click="addPointToTrip()" ng->Add</button>
+    <button ng-click="clearSearch()" ng->Cancel</button>
+    </span>
+    <button ng-click="saveTrip()" ng->Save trip</button>
     <h1>{{trip.title}}</h1>
-    <p>{{trip.description}}</p>
+    {{trip.description}}
     <div class="section" ng-repeat="section in trip.sections">
     <h2>{{section.name}}</h2>
-    <p>{{section.description}}</p>
+    {{section.description}}
     <ul ng-repeat="location in section.locations">
     	<li>
     	<h3>{{location.name}}</h3>
-    	<p>{{location.description}}</p>
+    	{{location.description}}
     	</li>
     </ul>
     </div> 
-    <p>center: {{map.center}}</p>
-    <p>markers: {{map.markers}}</p>
-    <p>polylines: {{map.polylines}}</p>
-    <ul>
-    <li ng-repeat="p in map.polylines">{{p}}
-    </ul>
 	</div>    
+
+        <google-map style="display:block;height:300px" center="map.center" zoom="map.zoom" control="map.control">
+    <markers models="map.markers" coords="'self'" fit="true" options="'self'"/>
+    <polyline ng-repeat="p in map.polylines" path="p.path"/>
+    </google-map>

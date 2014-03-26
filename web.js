@@ -32,7 +32,7 @@ app.get('/api/maps/:id', function(req, res) {
   });
 });
 
-app.get('/api/maps/', function(req, res) {
+app.get('/api/maps', function(req, res) {
   db.collection('maps', function(err, collection) {
     collection.find({},['id','title']).toArray(function(err,list) {
     	res.send(list);
@@ -40,20 +40,22 @@ app.get('/api/maps/', function(req, res) {
   });
 });
 
-app.put('/api/maps/:id', function(req, res) {
-  var id=req.params.id;
+app.post('/api/maps', function(req, res) {
   var map=req.body;
   db.collection('maps', function(err, collection) {
-    collection.update({'id':id},map,{safe:true},function(err,doc) {
-    	res.send(doc);
+    collection.save(map,{w:1},function(err,doc) {
+      console.log(err);
+      collection.findOne({'id':map.id}, function(err,doc) {
+        res.send(doc);
+      });
     });
   });
 });
 
-app.post('/api/maps/', function(req, res) {
+app.put('/api/maps', function(req, res) {
   var map=req.body;
   db.collection('maps', function(err, collection) {
-    collection.insert(map,{safe:true},function(err,doc) {
+    collection.insert(map,{w:1},function(err,doc) {
     	res.send(doc);
     });
   });
@@ -72,28 +74,38 @@ app.listen(port, function() {
 
 function initDB() {
   maps= [
-	{
-		id:"barcelona",title:"Barcelona",
-		locations: [
-			{type:"point",coords:[41.40401, 2.17454],name:"Sagrada Familia",description:"On van tots els turistes"},
-			{type:"point",coords:[41.3705, 2.1502],name:"Pavello mies van der rohe",description:"No se com s'escriu"},
-			{type:"route",coords:[[41.3705, 2.1502],[41.40401, 2.17454]],name:"Linia recta",description:"Com no vagis volant..."}
-		]
-	},
+	 {
+    id:"barcelona",title:"Barcelona",
+    description:"Viatge per Barcelona amb punts turístics per ordre",
+    sections: [
+      {
+        name:"Barcelona",
+        description:"Primer dia",
+        locations: [
+          {type:"point",coords:[41.40401, 2.17454],name:"Sagrada Familia",description:"On van tots els turistes"},
+          {type:"route",coords:[[41.3705, 2.1502],[41.40401, 2.17454]],name:"Linia recta",description:"Com no vagis volant..."},
+          {type:"point",coords:[41.3705, 2.1502],name:"Pavello mies van der rohe",description:"No se com s'escriu"}
+        ]
+      }
+    ]
+  },
 	{
 		id:"londres",title:"London",
 		locations: [
 			{type:"point",coords:{x:1,y:2},name:"Big Ben",description:"El rellotge gran"},
 			{type:"point",coords:{x:1,y:2},name:"British Museum",description:"La pedra roseta"}
 		]
-	}
+	},
+  {
+    id:"bretanya",title:"Bretanya",
+  },
   ];
 
   db.collection('maps', function(er, collection) {
     collection.drop(function (er,rs) {
-      console.log("Wiping out db...");
+      console.log("Wiping out db..."+er+rs);
       collection.insert(maps, {safe: true}, function(er,rs) {
-        console.log("Populating db...");
+        console.log("Populating db..."+er+rs);
       });
     });
   });
