@@ -26,7 +26,7 @@ mongo.Db.connect(mongoUri, function (err, mydb) {
 
 app.get('/api/maps/:id', function(req, res) {
   db.collection('maps', function(err, collection) {
-    collection.findOne({'id':req.params.id}, function(err,doc) {
+    collection.findOne({'_id':req.params.id}, function(err,doc) {
     	res.send(doc);
     });
   });
@@ -34,7 +34,7 @@ app.get('/api/maps/:id', function(req, res) {
 
 app.get('/api/maps', function(req, res) {
   db.collection('maps', function(err, collection) {
-    collection.find({},['id','title']).toArray(function(err,list) {
+    collection.find({},['_id','title']).toArray(function(err,list) {
     	res.send(list);
     });
   });
@@ -44,10 +44,7 @@ app.post('/api/maps', function(req, res) {
   var map=req.body;
   db.collection('maps', function(err, collection) {
     collection.save(map,{w:1},function(err,doc) {
-      console.log(err);
-      collection.findOne({'id':map.id}, function(err,doc) {
-        res.send(doc);
-      });
+      res.send(map);
     });
   });
 });
@@ -75,7 +72,7 @@ app.listen(port, function() {
 function initDB() {
   maps= [
 	 {
-    id:"barcelona",title:"Barcelona",
+    _id:"barcelona",title:"Barcelona",
     description:"Viatge per Barcelona amb punts turístics per ordre",
     sections: [
       {
@@ -90,14 +87,23 @@ function initDB() {
     ]
   },
 	{
-		id:"londres",title:"London",
+		_id:"londres",title:"London",
+    sections: [
+    {
 		locations: [
 			{type:"point",coords:{x:1,y:2},name:"Big Ben",description:"El rellotge gran"},
 			{type:"point",coords:{x:1,y:2},name:"British Museum",description:"La pedra roseta"}
 		]
+    }
+    ]
 	},
   {
-    id:"bretanya",title:"Bretanya",
+    _id:"bretanya",title:"Bretanya",
+    sections: [
+    {
+      locations:[]
+    }
+    ]
   },
   ];
 

@@ -67,11 +67,13 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
     var newCoords=[$scope.newMarker.latitude,$scope.newMarker.longitude];
     var name=$scope.newMarker.name;
     var lastPoint=lastPointInSection($scope.trip.sections[0]);
-    $scope.clearSearch();
     $scope.trip.sections[0].locations.push({type:"point",coords:newCoords,name:name,description:"prova"});
-    $scope.trip.sections[0].locations.push(
-      {type:"route",coords:[lastPoint.coords,newCoords],name:"ruta "+lastPoint.name+" - "+name,description:"Es poden posar descripcions a les rutes"}
-    );
+    $scope.clearSearch();
+    try {
+      $scope.trip.sections[0].locations.push(
+        {type:"route",coords:[lastPoint.coords,newCoords],name:"ruta "+lastPoint.name+" - "+name,description:"Es poden posar descripcions a les rutes"}
+      )
+    } catch (err) {;}
     showTripInMap($scope.trip,$scope.map);
   }
 
