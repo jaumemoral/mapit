@@ -64,6 +64,7 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
   }
 
   $scope.addPointToTrip=function() {
+    alert($scope.addAfter);
     var newCoords=[$scope.newMarker.latitude,$scope.newMarker.longitude];
     var name=$scope.newMarker.name;
     var lastPoint=lastPointInSection($scope.trip.sections[0]);
@@ -79,6 +80,12 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
 
   $scope.saveTrip=function() {
     $scope.trip.$save();
+  }
+
+  $scope.deleteLocation=function() {
+    alert("ei");
+    $scope.trip.sections[0].locations.pop();
+    showTripInMap($scope.trip,$scope.map);
   }
 
 });
