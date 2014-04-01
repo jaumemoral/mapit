@@ -35,8 +35,11 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
       },
       markers:[],
       polylines:[{path:[{latitude: 21,longitude: 2},{latitude: 21,longitude: 2}]}],
-      zoom: 8
+      zoom: 8,
+      events: {
+        click: $scope.clickOnMap
       }
+    }
   });
 
   geocoder = new google.maps.Geocoder();
@@ -56,6 +59,28 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
           alert('Geocode was not successful for the following reason: ' + status);
         }
       });
+  }
+
+  $scope.clickOnMap=function (mapModel, eventName, originalEventArgs) {
+    alert("ei");
+                    // 'this' is the directive's scope
+                    $log.log("user defined event: " + eventName, mapModel, originalEventArgs);
+
+                    var e = originalEventArgs[0];
+
+                    if (!$scope.map.clickedMarker) {
+                        $scope.map.clickedMarker = {
+                            title: 'You clicked here',
+                            latitude: e.latLng.lat(),
+                            longitude: e.latLng.lng()
+                        };
+                    }
+                    else {
+                        $scope.map.clickedMarker.latitude = e.latLng.lat();
+                        $scope.map.clickedMarker.longitude = e.latLng.lng();
+                    }
+
+                    $scope.$apply();
   }
 
   $scope.clearSearch=function() {
@@ -82,9 +107,10 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
     $scope.trip.$save();
   }
 
-  $scope.deleteLocation=function() {
-    alert("ei");
-    $scope.trip.sections[0].locations.pop();
+  $scope.deleteLocation=function(section,location) {
+    var s=$scope.trip.sections.indexOf(section);
+    var l=$scope.trip.sections[s].locations.indexOf(location);
+    $scope.trip.sections[s].locations.splice(l,1);
     showTripInMap($scope.trip,$scope.map);
   }
 

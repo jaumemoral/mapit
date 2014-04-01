@@ -31,7 +31,7 @@
         	<li>
                <b>{{location.name}}</b><br>
                {{location.description}}
-               <button ng-click="deleteLocation()">delete</button>
+               <button ng-click="deleteLocation(section,location)">delete</button>
            </li>
        </ul>
    </div>
@@ -49,7 +49,7 @@
         <button ng-click="clearSearch()" ng->Cancel</button>
     </span>
     <button ng-click="saveTrip()" ng->Save trip</button>
-        <google-map center="map.center" zoom="map.zoom" control="map.control">
+        <google-map center="map.center" zoom="map.zoom" control="map.control" events="map.events">
         <markers models="map.markers" coords="'self'" fit="true" options="'self'"/>
         <polyline ng-repeat="p in map.polylines" path="p.path"/>
     </google-map>
