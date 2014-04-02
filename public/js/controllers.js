@@ -22,7 +22,7 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
   Trip.get({mapId:$routeParams.mapId},function(trip) {  
     $scope.trip=trip;
     showTripInMap(trip,$scope.map);
-    console.log($scope.map);
+    $scope.selectedSection=trip.sections[0];
   });
 
   // default??
@@ -33,11 +33,13 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
         latitude: 21,
         longitude: 2
       },
-      markers:[],
+      markers:[],newMarker:{},
       polylines:[{path:[{latitude: 21,longitude: 2},{latitude: 21,longitude: 2}]}],
       zoom: 8,
       events: {
-        click: $scope.clickOnMap
+        click: function (mapModel, eventName, originalEventArgs) {
+            $scope.clickOnMap(originalEventArgs[0]);
+        }
       }
     }
   });
@@ -45,14 +47,12 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
   geocoder = new google.maps.Geocoder();
 
   $scope.searchAddress=function() {
-    if ($scope.newMarker!=null) $scope.clearSearch();
-    geocoder.geocode( { 'address': $scope.address}, function(results, status) {
+    var address=$scope.address;
+    geocoder.geocode( { 'address': address}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
-          console.log(results);
           var location=results[0].geometry.location;
-          var newMarker={latitude:location.lat(),longitude:location.lng(),name:$scope.address,options:{animation:google.maps.Animation.DROP}};
-          $scope.map.markers.push(newMarker);
-          $scope.newMarker=newMarker;
+          $scope.clearSearch();
+          $scope.map.newMarker={latitude:location.lat(),longitude:location.lng(),name:address};
           // No se perque pero cal!!
           $scope.$apply();
         } else {
@@ -61,45 +61,50 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
       });
   }
 
-  $scope.clickOnMap=function (mapModel, eventName, originalEventArgs) {
-    alert("ei");
-                    // 'this' is the directive's scope
-                    $log.log("user defined event: " + eventName, mapModel, originalEventArgs);
+  $scope.clickOnMap=function (event) {
+    if (!$scope.map.newMarker) {
+        $scope.map.newMarker = {
+            latitude: event.latLng.lat(),
+            longitude: event.latLng.lng()
+        }
+    } else {
+        $scope.map.newMarker.latitude = event.latLng.lat();
+        $scope.map.newMarker.longitude = event.latLng.lng();
+    }
 
-                    var e = originalEventArgs[0];
+    geocoder.geocode( { 'latLng': event.latLng}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          $scope.address=results[0].formatted_address;
+          $scope.results=results[0].formatted_address;
+          $scope.$apply();
+        } else {
+          alert('Geocode was not successful for the following reason: ' + status);
+        }
+      });
 
-                    if (!$scope.map.clickedMarker) {
-                        $scope.map.clickedMarker = {
-                            title: 'You clicked here',
-                            latitude: e.latLng.lat(),
-                            longitude: e.latLng.lng()
-                        };
-                    }
-                    else {
-                        $scope.map.clickedMarker.latitude = e.latLng.lat();
-                        $scope.map.clickedMarker.longitude = e.latLng.lng();
-                    }
-
-                    $scope.$apply();
   }
 
   $scope.clearSearch=function() {
-    $scope.map.markers.pop();
-    $scope.newMarker=null;
+    $scope.address=null;
+    $scope.map.newMarker={};
+  }
+
+  $scope.selectSection=function(section) {
+    $scope.selectedSection=section;
   }
 
   $scope.addPointToTrip=function() {
-    alert($scope.addAfter);
-    var newCoords=[$scope.newMarker.latitude,$scope.newMarker.longitude];
-    var name=$scope.newMarker.name;
-    var lastPoint=lastPointInSection($scope.trip.sections[0]);
-    $scope.trip.sections[0].locations.push({type:"point",coords:newCoords,name:name,description:"prova"});
+    var m=$scope.map.newMarker;
+    var newCoords=[m.latitude,m.longitude];
+    var name=m.name;
+    var lastPoint=lastPointInSection($scope.selectedSection);
+    $scope.selectedSection.locations.push({type:"point",coords:newCoords,name:name,description:"prova"});
     $scope.clearSearch();
     try {
-      $scope.trip.sections[0].locations.push(
+      $scope.selectedSection.locations.push(
         {type:"route",coords:[lastPoint.coords,newCoords],name:"ruta "+lastPoint.name+" - "+name,description:"Es poden posar descripcions a les rutes"}
       )
-    } catch (err) {;}
+    } catch (err) {alert(err)}
     showTripInMap($scope.trip,$scope.map);
   }
 
@@ -119,26 +124,33 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
 // ----------------------
 
 function showTripInMap(trip,map) {
-  var locations=trip.sections[0].locations;
+  var sections=trip.sections;
   map.markers=[];
-  map.polylines=[]
+  map.polylines=[];
+  for (var i in sections) {
+    showSectionInMap(sections[i],map)
+  }
+}
+
+function showSectionInMap(section,map) {
+  var locations=section.locations;
 
   for (var i in locations) {
     var location=locations[i];
     if (location.type=="point") {
-      addPoint(map,location);
+      addPoint(location,map);
     }
     if (location.type=="route") {
-      addRoute(map,location);
+      addRoute(location,map);
     }
   }
 }
 
-function addPoint(map,location) {
+function addPoint(location,map) {
   map.markers.push({latitude:location.coords[0],longitude:location.coords[1],showWindow:false,title:location.name});
 }
 
-function addRoute(map,location) {
+function addRoute(location,map) {
   var line=[];
   for (var i in location.coords) {
     var coord=location.coords[i];

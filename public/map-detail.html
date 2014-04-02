@@ -21,10 +21,9 @@
 -->
   <div class="row">
 <div class="col-md-6 trip-description">
-   
     <h1>{{trip.title}}</h1>
     <p>{{trip.description}}</p>
-    <div class="well" ng-repeat="section in trip.sections">
+    <div ng-repeat="section in trip.sections" ng-click="selectSection(section)" ng-class="{'well':(selectedSection==section)}">
         <h2>{{section.name}}</h2>
         <p>{{section.description}}</p>
         <ul ng-repeat="location in section.locations">
@@ -37,22 +36,20 @@
    </div>
    </div> 
     <div class="col-md-6">
-         <input type="text" id="search" ng-model="address"/>
-    <button ng-click="searchAddress()">Search</button>
-    <span ng-show="newMarker!=null">
-        <button ng-click="addPointToTrip()" ng->Add after</button>
-        <select ng-model="addAfter">
-            <optgroup ng-repeat="section in trip.sections">
-            <option ng-repeat="location in section.locations">{{location.name}}</option>
-            </optgroup>
-        </select>
-        <button ng-click="clearSearch()" ng->Cancel</button>
+      <form>
+        <input type="text" id="search" ng-model="address"/>
+        <button type="submit" ng-click="searchAddress()">Search</button>
+      </form>
+      <button ng-click="addPointToTrip()" ng->Add</button>
+      <button ng-click="clearSearch()" ng->Cancel</button>
     </span>
     <button ng-click="saveTrip()" ng->Save trip</button>
         <google-map center="map.center" zoom="map.zoom" control="map.control" events="map.events">
         <markers models="map.markers" coords="'self'" fit="true" options="'self'"/>
+        <marker coords="map.newMarker" options="'{animation:google.maps.Animation.DROP}'"/>
         <polyline ng-repeat="p in map.polylines" path="p.path"/>
     </google-map>
+    {{results}}
 </div>
 
 </div>
