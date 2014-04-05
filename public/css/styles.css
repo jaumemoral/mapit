@@ -1,9 +1,15 @@
-html,body {margin:0;height:100%;width:100%;overflow:hidden;}
-.controls {position:absolute;top:0;left:0;z-index:100;height:60px;width:100%;background-color:#DDDDDD;}
+html,body {margin:0;height:100%;width:100%;overflow:hidden; font-family: sans-serif; font-size:100%;}
+.header {position:absolute;top:0;left:0;z-index:1;height:60px;width:100%;background-color:#3399FF;line-height:60px;}
+.controls {right:30%;position:absolute;padding-right:30px;}
+.logo {position:absolute; font-size:40px;margin-left:10px;font-weight:bold;text-shadow:1px 1px black; color:white;}
 .container {min-height:100%; width:100%;}
-.trip-description {width:30%; float:left;max-height:100%;overflow:auto;}
+.trip-description {width:30%; float:right;max-height:100%;overflow:auto;padding:10px}
 html,body,.container,.map,.angular-google-map, google-map, .angular-google-map-container {min-height:100%;height:100%}
-.section {background-color:#DDDDDD;padding-left:10px;padding-right:10px;}
+.section {background-color:#DDDDDD;padding:10px}
 .selected {background-color:#BBBBBB}
 h1,h2 {margin-bottom:0;margin-top:0;}
 .map {margin-top:60px;}
+li,ul {margin:0;padding:0;list-style-type: none}
+li {margin-top:0.5em;}
+li:hover {background-color:white;};
+.selected li:hover {cursor:move;}

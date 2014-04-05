@@ -1,5 +1,8 @@
-    <div class="controls">
+    <div class="header">
+      <div class="logo">
       MapTrip
+      </div>
+      <div class="controls">
       <form>
         <input type="text" id="search" ng-model="address"/>
         <button type="submit" ng-click="searchAddress()">Search</button>
@@ -8,17 +11,16 @@
       <button ng-click="saveTrip()" ng->Save trip</button>
       </form>
     </div>
-
+    </div>
 
     <div class="trip-description">
-      <div class="scroll">
       <h1>{{trip.title}}</h1>
       <p>{{trip.description}}</p>
       <div class="section" ng-repeat="section in trip.sections" ng-click="selectSection(section)" ng-class="{'selected':(selectedSection==section)}">
         <h2>{{section.name}}</h2>
         <p>{{section.description}}</p>
-        <ul ng-repeat="location in section.locations">
-        	<li>
+        <ul>
+        	<li ui-draggable="true" drag="$index" ng-repeat="location in section.locations" ui-on-Drop="onDrop($data,location)">
            <b>{{location.name}}</b><br/>
            {{location.description}}
            <button ng-click="deleteLocation(section,location)">delete</button>
@@ -28,11 +30,9 @@
    </div>
    </div>    
    <div class="map">
-    <google-map center="map.center" zoom="map.zoom" control="map.control" events="map.events">
-      <markers models="map.markers" coords="'self'" fit="true" options="'self'"/>
+    <google-map center="map.center" zoom="map.zoom" control="map.control" events="map.events" draggable="true">
+      <markers models="map.markers" coords="'self'" fit="true" options="{draggable:true}"/>
       <marker coords="map.newMarker" options="'{animation:google.maps.Animation.DROP}'"/>
-      <polyline ng-repeat="p in map.polylines" path="p.path"/>
+      <polyline ng-repeat="p in map.polylines" path="p.path" options="{draggable:true}"/>
     </google-map>  
-  </div>
 </div>
-{{results}}

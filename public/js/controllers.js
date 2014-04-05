@@ -1,4 +1,4 @@
-var mapTrip = angular.module('mapTrip', ['ngRoute','google-maps','mapTripServices']);
+var mapTrip = angular.module('mapTrip', ['ngRoute','google-maps','mapTripServices','ngDragDrop']);
  
 mapTrip.config(['$routeProvider',
   function($routeProvider) {
@@ -59,6 +59,13 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
           alert('Geocode was not successful for the following reason: ' + status);
         }
       });
+  }
+
+  $scope.onDrop=function(origin,location) {
+    movedElement=$scope.selectedSection.locations[origin];
+    $scope.selectedSection.locations.splice(origin,1)
+    i=$scope.selectedSection.locations.indexOf(location);
+    $scope.selectedSection.locations.splice(i,0,movedElement);
   }
 
   $scope.clickOnMap=function (event) {
