@@ -32,15 +32,33 @@ app.get('/api/maps/:id', function(req, res) {
   });
 });
 
+app.delete('/api/maps/:id', function(req, res) {
+  db.collection('maps', function(err, collection) {
+    collection.remove({'_id':req.params.id}, function(err,doc) {
+      res.json(true);
+    });
+  });
+});
+
 app.get('/api/maps', function(req, res) {
   db.collection('maps', function(err, collection) {
-    collection.find({},['_id','title']).toArray(function(err,list) {
+    collection.find({},['_id','title','description']).toArray(function(err,list) {
     	res.send(list);
     });
   });
 });
 
 app.post('/api/maps', function(req, res) {
+  var map=req.body;
+  db.collection('maps', function(err, collection) {
+    collection.save(map,{w:1},function(err,doc) {
+      res.send(map);
+    });
+  });
+});
+
+
+app.post('/api/maps/:id', function(req, res) {
   var map=req.body;
   db.collection('maps', function(err, collection) {
     collection.save(map,{w:1},function(err,doc) {

@@ -1,6 +1,6 @@
-var phonecatServices = angular.module('mapTripServices', ['ngResource']);
+var mapTripServices = angular.module('mapTripServices', ['ngResource']);
  
-phonecatServices.factory('Trip', ['$resource',
+mapTripServices.factory('Trip', ['$resource',
   function($resource){
-    return $resource('/api/maps/:mapId');
+    return $resource('/api/maps/:mapId',{mapId:'@_id'});
   }]);

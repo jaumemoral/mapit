@@ -16,6 +16,30 @@ mapTrip.config(['$routeProvider',
 
 mapTrip.controller('MapListCtrl', function ($scope,Trip) {
   $scope.trips=Trip.query();
+  $scope.newTrip={};
+
+  $scope.createMap=function() {
+    var trip=new Trip();
+    trip._id=$scope.newTrip._id;
+    trip.title=$scope.newTrip.title;
+    trip.description=$scope.newTrip.description;
+    trip.$save();
+    $scope.trips.push(trip);
+    // Aixo no es gaire angularesc...
+    $("#addMapDialog").modal('hide');
+  };
+
+  $scope.deleteMap=function(trip) {
+    trip.$delete();
+    $scope.trips=Trip.query();
+    $("#deleteMapDialog").modal('hide');
+  }
+
+  $scope.prepareToDeleteMap=function(trip) {
+    $scope.tripToDelete=trip;
+  }
+
+
 });
 
 mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
