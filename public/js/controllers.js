@@ -23,8 +23,13 @@ mapTrip.controller('MapListCtrl', function ($scope,Trip) {
     trip._id=$scope.newTrip._id;
     trip.title=$scope.newTrip.title;
     trip.description=$scope.newTrip.description;
+    trip.sections=[{
+        name:"Section 1",
+        description:"Section 1 description",
+        locations: []
+    }];
     trip.$save();
-    $scope.trips.push(trip);
+    $scope.trips=Trip.query();
     // Aixo no es gaire angularesc...
     $("#addMapDialog").modal('hide');
   };
@@ -68,7 +73,8 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
     }
   });
 
-  geocoder = new google.maps.Geocoder();
+  var geocoder = new google.maps.Geocoder();
+  var directionsService = new google.maps.DirectionsService();
 
   $scope.searchAddress=function() {
     var address=$scope.address;
@@ -77,6 +83,7 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
           var location=results[0].geometry.location;
           $scope.clearSearch();
           $scope.map.newMarker={latitude:location.lat(),longitude:location.lng(),name:address};
+          $scope.map.center={latitude:location.lat(),longitude:location.lng()};
           // No se perque pero cal!!
           $scope.$apply();
         } else {
@@ -129,14 +136,27 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
     var newCoords=[m.latitude,m.longitude];
     var name=m.name;
     var lastPoint=lastPointInSection($scope.selectedSection);
-    $scope.selectedSection.locations.push({type:"point",coords:newCoords,name:name,description:"prova"});
+    var currentLocations=$scope.selectedSection.locations;
+    currentLocations.push({type:"point",coords:newCoords,name:name,description:"prova"});
     $scope.clearSearch();
-    try {
-      $scope.selectedSection.locations.push(
-        {type:"route",coords:[lastPoint.coords,newCoords],name:"ruta "+lastPoint.name+" - "+name,description:"Es poden posar descripcions a les rutes"}
-      )
-    } catch (err) {alert(err)}
-    showTripInMap($scope.trip,$scope.map);
+    var request={
+        origin:new google.maps.LatLng(lastPoint[0],lastPoint[1]),
+        destination:new google.maps.LatLng(newCoords[0],newCoords[1]),
+        travelMode: google.maps.TravelMode.DRIVING
+      }
+    directionsService.route(request, function(result, status) {
+        alert(result);
+      if (status == google.maps.DirectionsStatus.OK) {
+        alert("ok");
+        var route=[];
+        for (i in result.routes[0].legs[0]) {
+          point=result.routes[0].legs[0][i];
+          route[i]=[point.lat(),point.lng()];
+        }
+        currentLocations.push({type:"route",coords:route,name:name,description:"prova"});
+        showTripInMap($scope.trip,$scope.map);
+      }
+    });
   }
 
   $scope.saveTrip=function() {

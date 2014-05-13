@@ -22,6 +22,24 @@ mongo.Db.connect(mongoUri, function (err, mydb) {
   }
 });
 
+// Login
+
+function requireLogin(req, res, next) {
+  if (req.session.loggedIn) {
+    next(); // allow the next route to run
+  } else {
+    // require the user to log in
+    res.redirect("/login"); // or render a form, etc.
+  }
+}
+
+// Automatically apply the `requireLogin` middleware
+/*
+app.all("/*", requireLogin, function(req, res, next) {
+  next();
+});
+*/
+
 // Routes
 
 app.get('/api/maps/:id', function(req, res) {
