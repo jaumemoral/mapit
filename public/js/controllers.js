@@ -140,17 +140,17 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
     currentLocations.push({type:"point",coords:newCoords,name:name,description:"prova"});
     $scope.clearSearch();
     var request={
-        origin:new google.maps.LatLng(lastPoint[0],lastPoint[1]),
+        origin:new google.maps.LatLng(lastPoint.coords[0],lastPoint.coords[1]),
         destination:new google.maps.LatLng(newCoords[0],newCoords[1]),
         travelMode: google.maps.TravelMode.DRIVING
       }
+      console.log(request);
     directionsService.route(request, function(result, status) {
-        alert(result);
+        console.log(result);
       if (status == google.maps.DirectionsStatus.OK) {
-        alert("ok");
         var route=[];
-        for (i in result.routes[0].legs[0]) {
-          point=result.routes[0].legs[0][i];
+        for (i in result.routes[0].overview_path) {
+          point=result.routes[0].overview_path[i];
           route[i]=[point.lat(),point.lng()];
         }
         currentLocations.push({type:"route",coords:route,name:name,description:"prova"});
