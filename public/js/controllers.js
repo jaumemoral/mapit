@@ -1,4 +1,4 @@
-var mapTrip = angular.module('mapTrip', ['ngRoute','google-maps','mapTripServices','ngDragDrop']);
+var mapTrip = angular.module('mapTrip', ['ngRoute','leaflet-directive','mapTripServices','ngDragDrop']);
  
 mapTrip.config(['$routeProvider',
   function($routeProvider) {
@@ -58,13 +58,9 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
   angular.extend($scope,{
     map: {
       control:{},
-      center: {
-        latitude: 21,
-        longitude: 2
-      },
-      markers:[],newMarker:{},
-      polylines:[{path:[{latitude: 21,longitude: 2},{latitude: 21,longitude: 2}]}],
-      zoom: 8,
+      center: {lat: 41.40401,lng: 2.17454,zoom:8},
+      markers:{},
+      paths:[],
       events: {
         click: function (mapModel, eventName, originalEventArgs) {
             $scope.clickOnMap(originalEventArgs[0]);
@@ -82,8 +78,9 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
         if (status == google.maps.GeocoderStatus.OK) {
           var location=results[0].geometry.location;
           $scope.clearSearch();
-          $scope.map.newMarker={latitude:location.lat(),longitude:location.lng(),name:address};
-          $scope.map.center={latitude:location.lat(),longitude:location.lng()};
+          $scope.map.markers.newMarker={lat:location.lat(),lng:location.lng(),message:address};
+          $scope.map.center.lat=location.lat();
+          $scope.map.center.lng=location.lng();
           // No se perque pero cal!!
           $scope.$apply();
         } else {
@@ -100,16 +97,16 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
   }
 
   $scope.clickOnMap=function (event) {
-    if (!$scope.map.newMarker) {
-        $scope.map.newMarker = {
+
+    if (!$scope.map.markers.newMarker) {
+        $scope.map.markers.newMarker = {
             latitude: event.latLng.lat(),
             longitude: event.latLng.lng()
         }
     } else {
-        $scope.map.newMarker.latitude = event.latLng.lat();
-        $scope.map.newMarker.longitude = event.latLng.lng();
+        $scope.map.markers.newMarker.latitude = event.latLng.lat();
+        $scope.map.markers.newMarker.longitude = event.latLng.lng();
     }
-
     geocoder.geocode( { 'latLng': event.latLng}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
           $scope.address=results[0].formatted_address;
@@ -124,7 +121,7 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
 
   $scope.clearSearch=function() {
     $scope.address=null;
-    $scope.map.newMarker={};
+    $scope.map.markers.newMarker={};
   }
 
   $scope.selectSection=function(section) {
@@ -132,9 +129,9 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
   }
 
   $scope.addPointToTrip=function() {
-    var m=$scope.map.newMarker;
-    var newCoords=[m.latitude,m.longitude];
-    var name=m.name;
+    var m=$scope.map.markers.newMarker;
+    var newCoords=[m.lat,m.lng];
+    var name=m.message;
     var lastPoint=lastPointInSection($scope.selectedSection);
     var currentLocations=$scope.selectedSection.locations;
     currentLocations.push({type:"point",coords:newCoords,name:name,description:"prova"});
@@ -144,7 +141,7 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
         destination:new google.maps.LatLng(newCoords[0],newCoords[1]),
         travelMode: google.maps.TravelMode.DRIVING
       }
-      console.log(request);
+      console.log(newCoords[0]+"-"+newCoords[1]);
     directionsService.route(request, function(result, status) {
         console.log(result);
       if (status == google.maps.DirectionsStatus.OK) {
@@ -176,20 +173,25 @@ mapTrip.controller('MapDetailCtrl',function ($scope,$routeParams,Trip) {
 
 function showTripInMap(trip,map) {
   var sections=trip.sections;
-  map.markers=[];
+  map.markers={};
   map.polylines=[];
   for (var i in sections) {
     showSectionInMap(sections[i],map)
   }
+  map.center=calculateBounds(trip);
+  console.log(map.center);
 }
 
 function showSectionInMap(section,map) {
   var locations=section.locations;
+  var bounds = new google.maps.LatLngBounds();
 
   for (var i in locations) {
     var location=locations[i];
     if (location.type=="point") {
       addPoint(location,map);
+      latLng = new google.maps.LatLng(location[0], location[1]);
+      bounds.extend(latLng);
     }
     if (location.type=="route") {
       addRoute(location,map);
@@ -197,17 +199,34 @@ function showSectionInMap(section,map) {
   }
 }
 
+function calculateBounds(trip) {
+  var bounds = new google.maps.LatLngBounds();
+  for (var i in trip.sections) {
+    for (var j in trip.sections[i].locations) {
+      var location=trip.sections[i].locations[j];
+      if (location.type=="point") {
+        latLng = new google.maps.LatLng(location.coords[0], location.coords[1]);
+        bounds.extend(latLng);
+      }
+    }
+  }
+  var center=bounds.getCenter();
+  return {lat:center.lat(),lng:center.lng(),zoom:8};
+}
+
+
 function addPoint(location,map) {
-  map.markers.push({latitude:location.coords[0],longitude:location.coords[1],showWindow:false,title:location.name});
+  console.log(map.markers);
+  map.markers["p"+Object.keys(map.markers).length]={lat:location.coords[0],lng:location.coords[1],message:location.name};
 }
 
 function addRoute(location,map) {
   var line=[];
   for (var i in location.coords) {
     var coord=location.coords[i];
-      line.push({latitude:coord[0],longitude:coord[1]});
+      line.push({lat:coord[0],lng:coord[1]});
   }
-  map.polylines.push({path:line});
+  map.paths.push({latlngs:line});
 }
 
 function lastPointInSection(section) {

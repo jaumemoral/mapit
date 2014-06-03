@@ -14,6 +14,7 @@
     </div>
 
     <div class="trip-description">
+      {{map.center}}
       <h1><a data-toggle="modal" data-target="#editMapDialog">{{trip.title}}</a></h1>
       <p><a data-toggle="modal" data-target="#editMapDialog">{{trip.description}}</a></p>
       <div class="section" ng-repeat="section in trip.sections" ng-click="selectSection(section)" ng-class="{'selected':(selectedSection==section)}">
@@ -30,11 +31,8 @@
    </div>
    </div>    
    <div class="map">
-    <google-map center="map.center" zoom="map.zoom" control="map.control" events="map.events" draggable="true">
-      <markers models="map.markers" coords="'self'" fit="true" options="{draggable:true}"/>
-      <marker coords="map.newMarker" options="'{animation:google.maps.Animation.DROP}'"/>
-      <polyline ng-repeat="p in map.polylines" path="p.path" options="{draggable:true}"/>
-    </google-map>  
+    <leaflet center="map.center" markers="map.markers" paths="map.paths" width="100%" height="100%">
+    </leaflet>  
 </div>
 
 <div class="modal fade" id="editMapDialog">

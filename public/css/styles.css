@@ -3,14 +3,14 @@ html,body {margin:0;height:100%;width:100%;overflow:hidden; font-family: sans-se
 .controls {right:30%;position:absolute;padding-right:30px;display:table-cell;vertical-align:middle;height:60px;min-height:60px;}
 .logo {position:absolute; font-size:40px;margin-left:10px;font-weight:bold;text-shadow:1px 1px black; color:white;}
 .all {width:100%;height:100%;}
-.trip-description {width:30%; float:right;max-height:100%;overflow:auto;padding:10px}
+.trip-description {width:30%; float:right;max-height:80%;overflow:auto;margin:10px; padding:10px; position:absolute;right:10px;z-index:1; background-color:rgba(100%,100%,100%,0.8);}
 html,body,.container,.map,.angular-google-map, google-map, .angular-google-map-container {min-height:100%;height:100%}
-.section {background-color:#DDDDDD;padding:10px}
-.selected {background-color:#BBBBBB}
+.section {padding:10px}
+.selected {background-color:rgba(50%,90%,90%,0.1)}
 h1,h2 {margin-bottom:0;margin-top:0;}
 .map,.trip-list {margin-top:60px;}
 .trip-list {padding:10px;}
-.trip-list li {float:left;width:20%;background-color:#DDDDDD;margin:10px;padding:10px;border-radius:10px;height:200px;}
+.trip-list li {float:left;width:20%;margin:10px;padding:10px;border-radius:10px;height:200px;}
 .trip-list a:visited,a:link {text-decoration:none;font-color:black;}
 li,ul {margin:0;padding:0;list-style-type: none}
 li {margin-top:0.5em;}
