@@ -16,3 +16,17 @@ li,ul {margin:0;padding:0;list-style-type: none}
 li {margin-top:0.5em;}
 li:hover {background-color:white;};
 .selected li:hover {cursor:move;}
+
+/* 
+    Open and closed icons on collapsing panels
+    http://jsfiddle.net/Wc4xt/335/ 
+*/
+.panel-heading h2 a:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e114";    
+    float: right; 
+    color: grey; 
+}
+.panel-heading h2 a.collapsed:after {
+    content: "\e080";
+}

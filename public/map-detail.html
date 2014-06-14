@@ -1,38 +1,45 @@
-    <div class="header">
-      <div class="logo">
-      <a href="/">MapTrip</a>
-      </div>
-      <div class="controls">
-      <form class="form-inline">
-        <input type="text" id="search" ng-model="address"/>
-        <button type="submit" ng-click="searchAddress()">Search</button>
+<div class="header">
+  <div class="logo">
+    <a href="/">MapTrip</a>
+  </div>
+  <div class="controls">
+    <form class="form-inline">
+      <input type="text" id="search" ng-model="address"/>
+      <button type="submit" ng-click="searchAddress()">Search</button>
       <button ng-click="addPointToTrip()" ng->Add</button>
       <button ng-click="clearSearch()" ng->Cancel</button>
       <button ng-click="saveTrip()" ng->Save trip</button>
-      </form>
-    </div>
-    </div>
+    </form>
+  </div>
+</div>
 
-    <div class="trip-description">
-      {{map.center}}
-      <h1><a data-toggle="modal" data-target="#editMapDialog">{{trip.title}}</a></h1>
-      <p><a data-toggle="modal" data-target="#editMapDialog">{{trip.description}}</a></p>
-      <div class="section" ng-repeat="section in trip.sections" ng-click="selectSection(section)" ng-class="{'selected':(selectedSection==section)}">
-        <h2><a data-toggle="modal" data-target="#editSectionDialog" ng-click="selectSection(section)">{{section.name}}</a></h2>           
-        <p><a data-toggle="modal" data-target="#editSectionDialog">{{section.description}}</a></p>
-        <ul>
-        	<li ui-draggable="true" drag="$index" ng-repeat="location in section.locations" ui-on-Drop="onDrop($data,location)">
-           <b>{{location.name}}</b><br/>
-           {{location.description}}
-           <button ng-click="deleteLocation(section,location)">delete</button>
-         </li>
-       </ul>
-     </div>
-   </div>
-   </div>    
-   <div class="map">
-    <leaflet center="map.center" markers="map.markers" paths="map.paths" width="100%" height="100%">
-    </leaflet>  
+<div class="trip-description panel-group" id="accordion">
+  {{map.center}}
+  <h1>{{trip.title}}</h1>
+  <p>{{trip.description}}</p>
+  <a class="glyphicon glyphicon-pencil" data-toggle="modal" data-target="#editMapDialog">edit</a>
+  <div class="panel"
+    ng-repeat="section in trip.sections" ng-click="selectSection(section)" ng-class="{'selected':(selectedSection==section)}">
+    <div class="panel-heading">
+      <h2><a data-toggle="collapse" data-parent="#accordion" data-target="#sec{{$index}}">{{section.name}}</a></h2>           
+      <p>{{section.description}}</p>
+      <a class="tool glyphicon glyphicon-pencil" data-toggle="modal" data-target="#editSectionDialog" ng-click="selectSection(section)">edit</a>
+    </div>
+    <div class="panel-collapse collapse in" id="sec{{$index}}">
+      <ul class="panel-body">
+        <li ui-draggable="true" drag="$index" ng-repeat="location in section.locations" ui-on-Drop="onDrop($data,location)">
+          <b>{{location.name}}</b><br/>
+          {{location.description}}           
+          <a ng-click="deleteLocation(section,location)" class="glyphicon glyphicon-trash">delete</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="map">
+  <leaflet center="map.center" markers="map.markers" paths="map.paths" width="100%" height="100%">
+  </leaflet>  
 </div>
 
 <div class="modal fade" id="editMapDialog">
@@ -43,16 +50,16 @@
       </div>
       <div class="modal-body">
         <form>
-        <div class="form-group">
-        <label>ID</label><input class="form-control" type="text" ng-model="trip._id">
-        </div>
-        <div class="form-group">
-        <label>Title</label><input class="form-control" type="text" ng-model="trip.title">
-        </div>
-        <div class="form-group">
-        <label>Description</label><textarea class="form-control" type="text" ng-model="trip.description"></textarea>
-        </div>
-    </form>
+          <div class="form-group">
+            <label>ID</label><input class="form-control" type="text" ng-model="trip._id">
+          </div>
+          <div class="form-group">
+            <label>Title</label><input class="form-control" type="text" ng-model="trip.title">
+          </div>
+          <div class="form-group">
+            <label>Description</label><textarea class="form-control" type="text" ng-model="trip.description"></textarea>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button class="btn btn-warning" data-dismiss="modal">Close</button>
@@ -69,17 +76,16 @@
       </div>
       <div class="modal-body">
         <form>
-        <div class="form-group">
-        <label>Title</label><input class="form-control" type="text" ng-model="selectedSection.name">
-        </div>
-        <div class="form-group">
-        <label>Description</label><textarea class="form-control" type="text" ng-model="selectedSection.description"></textarea>
-        </div>
-    </form>
+          <div class="form-group">
+            <label>Title</label><input class="form-control" type="text" ng-model="selectedSection.name">
+          </div>
+          <div class="form-group">
+            <label>Description</label><textarea class="form-control" type="text" ng-model="selectedSection.description"></textarea>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-warning" data-dismiss="modal">OK</button>
-        <button type="reset" class="btn btn-warning">Cancel</button>
+        <button class="btn btn-warning" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
